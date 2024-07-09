@@ -37,11 +37,12 @@ class AuthController with ChangeNotifier {
   void handleUserChanges(User? user) {
     if (user == null) {
       state = AuthState.unauthenticated;
+      notifyListeners();
     } else {
       state = AuthState.authenticated;
+      notifyListeners();
       // FirestoreService.storeUser(user.email ?? "No email available", user.uid);
     }
-    notifyListeners();
   }
 
   login(String userName, String password) async {

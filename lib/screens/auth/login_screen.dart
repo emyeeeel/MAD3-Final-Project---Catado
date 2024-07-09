@@ -1,7 +1,7 @@
 import 'package:finals/controllers/auth_controller.dart';
 import 'package:finals/routing/router.dart';
 import 'package:finals/screens/auth/signup_screen.dart';
-import 'package:finals/screens/home/home.dart';
+import 'package:finals/screens/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                 );
-                AuthController.I.login(email.text.trim(), password.text.trim());
+                await AuthController.I.login(email.text.trim(), password.text.trim());
                 Navigator.pop(context);
-                GlobalRouter.I.router.go(HomeScreen.route);
               },
               child: Text("Log in", style: TextStyle(color: Colors.white),),
             ),

@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'routing/router.dart';
 
 Future<void> main() async {
+
   AuthController.initialize();
   GlobalRouter.initialize();
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await AuthController.I.loadSession();
   runApp(const MainApp());
 }
 

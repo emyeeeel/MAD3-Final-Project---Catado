@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
             },
             child: Text('Log out'),
           ),
-                      MaterialButton(
+          MaterialButton(
               color: Colors.blueAccent,
               onPressed: () async {
                  if(FirebaseAuth.instance.currentUser != null){
@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                  }
               },
               child: Text('Check current user'),
-            ),
+          ),
         ],
       ),
     );
