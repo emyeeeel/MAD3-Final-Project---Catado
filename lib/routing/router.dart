@@ -1,7 +1,7 @@
 
 import 'dart:async';
 
-import 'package:finals/enum/enum.dart';
+import 'package:finals/enum/auth_enum.dart';
 import 'package:finals/screens/auth/signup_screen.dart';
 import 'package:finals/screens/home/create_screen.dart';
 import 'package:finals/screens/home/main_screens_wrapper.dart';

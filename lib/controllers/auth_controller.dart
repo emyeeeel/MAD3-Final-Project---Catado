@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../enum/enum.dart';
+import '../enum/auth_enum.dart';
 
 class AuthController with ChangeNotifier {
   // Static method to initialize the singleton in GetIt
