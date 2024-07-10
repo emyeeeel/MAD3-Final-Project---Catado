@@ -4,6 +4,7 @@ class UserModel{
   final String userId;
   final String email;
   final String username;
+  final String bio;
   final String displayName;
   final String profileImageUrl;
   final List<String> following;
@@ -14,6 +15,7 @@ class UserModel{
     required this.userId,
     required this.email, 
     required this.username, 
+    required this.bio, 
     required this.displayName, 
     required this.profileImageUrl, 
     required this.following, 

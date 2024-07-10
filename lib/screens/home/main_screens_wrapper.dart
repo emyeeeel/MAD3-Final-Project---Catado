@@ -35,7 +35,7 @@ class _WrapperState extends State<Wrapper> {
           BottomNavigationBarItem(icon: Icon(Icons.home, color: Colors.black,), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search, color: Colors.black), label: 'Search'),
           BottomNavigationBarItem(icon: Icon(Icons.add, color: Colors.black), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications, color: Colors.black), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite, color: Colors.black), label: 'Notifications'),
           BottomNavigationBarItem(icon: Icon(Icons.person, color: Colors.black), label: 'Profile'),
         ]
       ),

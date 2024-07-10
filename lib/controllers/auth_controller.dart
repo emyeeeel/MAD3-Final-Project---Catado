@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../enum/auth_enum.dart';
+import '../services/firestore_services.dart';
 
 class AuthController with ChangeNotifier {
   // Static method to initialize the singleton in GetIt
@@ -28,6 +29,7 @@ class AuthController with ChangeNotifier {
       'https://www.googleapis.com/auth/contacts.readonly',
     ],
   );
+
 
   listen() {
     currentAuthedUser =
@@ -60,6 +62,7 @@ class AuthController with ChangeNotifier {
     try{
       UserCredential userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: userName, password: password);
+      await FirestoreServices.storeUser(userName, userCredential.user!.uid);
     } on FirebaseAuthException catch(e){
       print("${e.code}: ${e.message}");
       throw Exception(e);

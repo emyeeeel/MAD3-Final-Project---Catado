@@ -90,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius:BorderRadius.circular(8)
               ),
-              onPressed: () {
+              onPressed: () async {
                 showDialog(
                   context: context, 
                   builder: (context) {
