@@ -28,6 +28,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: GlobalRouter.I.router,
       title: 'Mobile 3 - Final Project',
+      theme: ThemeData.dark(),
     );
   }
 }

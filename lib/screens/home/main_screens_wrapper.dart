@@ -23,6 +23,9 @@ class _WrapperState extends State<Wrapper> {
     return Scaffold(
       body: widget.child ?? const Placeholder(),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         currentIndex: index,
         onTap: (i) {
           setState(() {
@@ -32,11 +35,11 @@ class _WrapperState extends State<Wrapper> {
           });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home, color: Colors.black,), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search, color: Colors.black), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.add, color: Colors.black), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite, color: Colors.black), label: 'Notifications'),
-          BottomNavigationBarItem(icon: Icon(Icons.person, color: Colors.black), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.home, color: Colors.white,), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search, color: Colors.white), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.add, color: Colors.white), label: 'Create'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite, color: Colors.white), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.person, color: Colors.white), label: 'Profile'),
         ]
       ),
     );

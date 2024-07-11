@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 50,
               width: MediaQuery.of(context).size.width *.80,
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
+                border: Border.all(width: 1, color: Colors.white),
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 50,
               width: MediaQuery.of(context).size.width *.80,
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
+                border: Border.all(width: 1, color: Colors.white),
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const TextSpan(
                         text: "Don't have an account? ",
-                        style: TextStyle(fontWeight: FontWeight.normal, color:  Colors.black), 
+                        style: TextStyle(fontWeight: FontWeight.normal, color:  Colors.white), 
                       ),
                       TextSpan(
                         text: "Sign up",
@@ -140,31 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
                 ),
-            // MaterialButton(
-            //   color: Colors.greenAccent,
-            //   onPressed: () async {
-            //     GlobalRouter.I.router.go(SignupScreen.route);
-            //   },
-            //   child: Text('Create'),
-            // ),
-            // MaterialButton(
-            //   color: Colors.yellowAccent,
-            //   onPressed: () async {
-            //     try{
-            //       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.text.trim(), password: password.text.trim());
-            //     } on FirebaseAuthException catch(e){
-            //       print("${e.code}: ${e.message}");
-            //     }
-            //   },
-            //   child: Text('Sign in'),
-            // ),
-            // MaterialButton(
-            //   color: Colors.blueAccent,
-            //   onPressed: () async {
-            //      await FirebaseAuth.instance.signOut();
-            //   },
-            //   child: Text('Log out'),
-            // ),
           ],
         ),
       );

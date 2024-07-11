@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:finals/enum/auth_enum.dart';
 import 'package:finals/screens/auth/signup_screen.dart';
 import 'package:finals/screens/home/create_screen.dart';
+import 'package:finals/screens/home/edit_profile_screen.dart';
 import 'package:finals/screens/home/main_screens_wrapper.dart';
 import 'package:finals/screens/home/notification_screen.dart';
 import 'package:finals/screens/home/profile_screen.dart';
@@ -77,6 +78,13 @@ class GlobalRouter{
             name: SignupScreen.name,
             builder: (context, _) {
               return const SignupScreen();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: EditProfileScreen.route,
+            name: EditProfileScreen.name,
+            builder: (context, _) {
+              return const EditProfileScreen();
           }),
           ShellRoute(
               navigatorKey: _shellNavigatorKey,

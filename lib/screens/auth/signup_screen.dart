@@ -21,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
-  
+  bool isClicked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
               height: 50,
               width: MediaQuery.of(context).size.width *.80,
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
+                border: Border.all(width: 1, color: Colors.white),
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
@@ -51,16 +51,23 @@ class _SignupScreenState extends State<SignupScreen> {
               height: 50,
               width: MediaQuery.of(context).size.width *.80,
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
+                border: Border.all(width: 1, color: Colors.white),
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
-                obscureText: true,
+                obscureText: isClicked ? false : true,
                 controller: password,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
+                  contentPadding: const EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Password',
+                  suffixIcon: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        isClicked = !isClicked;
+                       });
+                      },
+                    child: Icon(isClicked ? Icons.visibility : Icons.visibility_off)),
                 ),
               ),
             ),
@@ -69,16 +76,23 @@ class _SignupScreenState extends State<SignupScreen> {
               height: 50,
               width: MediaQuery.of(context).size.width *.80,
               decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
+                border: Border.all(width: 1, color: Colors.white),
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
-                obscureText: true,
+                obscureText: isClicked ? false : true,
                 controller: confirmPassword,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
+                  contentPadding: const EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Confirm Password',
+                  suffixIcon: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        isClicked = !isClicked;
+                       });
+                      },
+                    child: Icon(isClicked ? Icons.visibility : Icons.visibility_off)),
                 ),
               ),
             ),
@@ -97,11 +111,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                 );
-                AuthController.I.register(email.text.trim(), password.text.trim());
+                await AuthController.I.register(email.text.trim(), password.text.trim());
                 Navigator.pop(context);
-                GlobalRouter.I.router.go(HomeScreen.route);
               },
-              child: Text("Sign up", style: TextStyle(color: Colors.white),),
+              child: const Text("Sign up", style: TextStyle(color: Colors.white),),
             ),
             SizedBox(
               height: 50,
@@ -138,7 +151,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       const TextSpan(
                         text: "Already have an account? ",
-                        style: TextStyle(fontWeight: FontWeight.normal, color:  Colors.black), 
+                        style: TextStyle(fontWeight: FontWeight.normal, color:  Colors.white), 
                       ),
                       TextSpan(
                         text: "Sign in",
