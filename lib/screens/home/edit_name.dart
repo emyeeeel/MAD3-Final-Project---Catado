@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/screens/home/edit_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -54,8 +55,25 @@ class _EditNameState extends State<EditName> {
                     content: const Text('AlertDialog description'),
                     actions: <Widget>[
                       TextButton(
-                        onPressed: () {
-                          
+                        onPressed: () async {
+                          showDialog(
+                            context: context, 
+                            builder: (context) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          );
+                          String uid = FirebaseAuth.instance.currentUser!.uid;
+                          try {
+                            await FirebaseFirestore.instance.collection('users').doc(uid).update({
+                              'name': name.text.trim(),
+                            });
+                            print('Name updated successfully');
+                            Navigator.pop(context);
+                          } catch (e) {
+                            print('Error updating name: $e');
+                            Navigator.pop(context);
+                          }
+                          Navigator.pop(context);
                         },
                         child: const Text('OK'),
                       ),
