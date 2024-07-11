@@ -4,7 +4,10 @@ import 'dart:async';
 import 'package:finals/enum/auth_enum.dart';
 import 'package:finals/screens/auth/signup_screen.dart';
 import 'package:finals/screens/home/create_screen.dart';
+import 'package:finals/screens/home/edit_bio.dart';
+import 'package:finals/screens/home/edit_name.dart';
 import 'package:finals/screens/home/edit_profile_screen.dart';
+import 'package:finals/screens/home/edit_username.dart';
 import 'package:finals/screens/home/main_screens_wrapper.dart';
 import 'package:finals/screens/home/notification_screen.dart';
 import 'package:finals/screens/home/profile_screen.dart';
@@ -41,7 +44,7 @@ class GlobalRouter{
       if (state.matchedLocation == SignupScreen.route) {
         return HomeScreen.route;
       }
-      return null;
+      return state.matchedLocation;
     }
     if (AuthController.I.state != AuthState.authenticated) {
       if (state.matchedLocation == LoginScreen.route) {
@@ -85,6 +88,27 @@ class GlobalRouter{
             name: EditProfileScreen.name,
             builder: (context, _) {
               return const EditProfileScreen();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: EditName.route,
+            name: EditName.name,
+            builder: (context, _) {
+              return const EditName();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: EditUsername.route,
+            name: EditUsername.name,
+            builder: (context, _) {
+              return const EditUsername();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: EditBio.route,
+            name: EditBio.name,
+            builder: (context, _) {
+              return const EditBio();
           }),
           ShellRoute(
               navigatorKey: _shellNavigatorKey,

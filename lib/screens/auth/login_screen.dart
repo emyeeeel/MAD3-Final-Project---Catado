@@ -1,11 +1,8 @@
 import 'package:finals/controllers/auth_controller.dart';
 import 'package:finals/routing/router.dart';
 import 'package:finals/screens/auth/signup_screen.dart';
-import 'package:finals/screens/home/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(child: Text('Login Screen')),
+            const Center(child: Text('Login Screen')),
             const SizedBox(height: 50,),
             Container(
               height: 50,
@@ -38,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: TextField(
                 controller: email,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Phone number, username, email',
@@ -56,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextField(
                 obscureText: true,
                 controller: password,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Password',
@@ -90,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 await AuthController.I.login(email.text.trim(), password.text.trim());
                 Navigator.pop(context);
               },
-              child: Text("Log in", style: TextStyle(color: Colors.white),),
+              child: const Text("Log in", style: TextStyle(color: Colors.white),),
             ),
             SizedBox(
               height: 50,

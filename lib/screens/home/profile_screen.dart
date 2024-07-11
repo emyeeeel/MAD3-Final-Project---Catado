@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../controllers/data_controller.dart';
 import '../../routing/router.dart';
 import 'edit_profile_screen.dart';
@@ -9,7 +8,7 @@ class ProfileScreen extends StatefulWidget {
   static const String route = '/profile';
   static const String name = "Profile Screen";
 
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -37,25 +36,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
         }
         return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                const Icon(Icons.lock_outline_rounded),
+                const SizedBox(width: 10,),
+                Text('${userDataController.userData!['displayName'] ?? 'Unknown'}'), 
+                const Icon(Icons.keyboard_arrow_down_rounded),
+                const Spacer(),
+                const Icon(Icons.add_box_rounded),
+                const SizedBox(width: 25,),
+                const Icon(Icons.menu)
+              ],
+            ),
+          ),
           body: Column(
             children: [
-              const SizedBox(height: 50,),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.lock_outline_rounded),
-                    const SizedBox(width: 10,),
-                    Text('${userDataController.userData!['displayName'] ?? 'Unknown'}'), 
-                    const Icon(Icons.keyboard_arrow_down_rounded),
-                    const Spacer(),
-                    const Icon(Icons.add_box_rounded),
-                    const SizedBox(width: 25,),
-                    const Icon(Icons.menu)
-                  ],
-                ),
-              ),
-              const SizedBox(height: 50,),
+              const SizedBox(height: 10,),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20,0,20,0),
                 child: Row(
@@ -134,7 +131,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.fromLTRB(20,0,20,0),
                       child: Row(
                         children: [
-                          Text('${userDataController.userData!['links'] ?? ''}'),
+                          InkWell(child: Text('${userDataController.userData!['links'] ?? ''}', style: const TextStyle(
+                            color: Colors.blue,
+                          ),),),
                         ],
                       ),
                     ),
@@ -145,40 +144,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
+                  MaterialButton(
+                    onPressed: (){
                       GlobalRouter.I.router.go(EditProfileScreen.route);
                     },
-                    child: Container(
-                      width: 150,
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(width: 1, color: Colors.white)
-                      ),
-                      child: const Center(child: Text("Edit Profile")),
+                    minWidth: 150,
+                    height: 35,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                    color: const Color.fromARGB(255, 40, 40, 40),
+                    child: const Text("Edit Profile"),
                   ),
                   const SizedBox(width: 15,),
-                  Container(
-                    width: 150,
+                  MaterialButton(
+                    onPressed: (){
+                      
+                    },
+                    minWidth: 150,
                     height: 35,
-                    decoration: BoxDecoration(
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(width: 1, color: Colors.white)
                     ),
-                    child: const Center(child: Text("Share Profile")),
+                    color: const Color.fromARGB(255, 40, 40, 40),
+                    child: const Text("Share Profile"),
                   ),
                   const SizedBox(width: 15,),
-                  Container(
-                    width: 35,
+                  MaterialButton(
+                    onPressed: (){
+                      
+                    },
+                    minWidth: 35,
                     height: 35,
-                    decoration: BoxDecoration(
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(width: 1, color: Colors.white)
                     ),
+                    color: const Color.fromARGB(255, 40, 40, 40),
                     child: const Icon(Icons.person_add),
-                  )
+                  ),
                 ],
               ),
               const Row(

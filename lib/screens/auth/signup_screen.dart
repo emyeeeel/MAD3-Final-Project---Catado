@@ -1,7 +1,5 @@
 import 'package:finals/controllers/auth_controller.dart';
 import 'package:finals/screens/auth/login_screen.dart';
-import 'package:finals/screens/home/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Center(child: Text('Sign up Screen')),
+            const Center(child: Text('Sign up Screen')),
             const SizedBox(height: 50,),
             Container(
               height: 50,
@@ -39,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               child: TextField(
                 controller: email,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Phone number, username, email',
