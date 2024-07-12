@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class CreateScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class CreateScreen extends StatefulWidget {
 
   static const String route = '/create';
   static const String name = "Create Screen";
@@ -8,9 +11,40 @@ class CreateScreen extends StatelessWidget {
   const CreateScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Create Screen'),
+  State<CreateScreen> createState() => _CreateScreenState();
+}
+
+class _CreateScreenState extends State<CreateScreen> {
+
+  File ? _selectedImage;
+
+  @override
+  Widget build(BuildContext context) {      
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: MaterialButton(
+              color: Colors.blue,
+              onPressed: () {
+                _pickImageFromGallery();
+              },
+              child: Text("Upload"),
+            ),
+          ),
+          const SizedBox(height: 20,),
+          _selectedImage != null ? Image.file(_selectedImage!) : const Text("Please select an image")
+        ],
+      ),
     );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _selectedImage = File(returnedImage!.path);
+    });
   }
 }

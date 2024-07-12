@@ -25,7 +25,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
           stream: _firestore
               .collection('reels')
               .orderBy('time', descending: true)
-              .snapshots(),
+              .snapshots(), 
           builder: (context, snapshot) {
             return PageView.builder(
               scrollDirection: Axis.vertical,

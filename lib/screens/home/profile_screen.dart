@@ -50,155 +50,206 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          body: Column(
-            children: [
-              const SizedBox(height: 10,),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                child: Row(
-                  children: [
-                    Stack(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: userDataController.userData!['profileImageUrl'] != ''
-                              ? NetworkImage(userDataController.userData!['profileImageUrl'])
-                              : const NetworkImage('https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain'),
-                          radius: 50,
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 10,),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20,0,20,0),
+                  child: Row(
+                    children: [
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: userDataController.userData!['profileImageUrl'] != ''
+                                ? NetworkImage(userDataController.userData!['profileImageUrl'])
+                                : const NetworkImage('https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain'),
+                            radius: 50,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        children: [
+                          Text('${userDataController.userData!['posts']?.length ?? 0}'), 
+                          const Text("posts")
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        children: [
+                          Text('${userDataController.userData!['followers']?.length ?? 0}'), 
+                          const Text("followers")
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        children: [
+                          Text('${userDataController.userData!['following']?.length ?? 0}'), 
+                          const Text("following")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20,0,20,0),
+                        child: Row(
+                          children: [
+                            Text('${userDataController.userData!['name'] ?? ''}'),
+                          ],
                         ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      children: [
-                        Text('${userDataController.userData!['posts']?.length ?? 0}'), 
-                        const Text("posts")
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      children: [
-                        Text('${userDataController.userData!['followers']?.length ?? 0}'), 
-                        const Text("followers")
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      children: [
-                        Text('${userDataController.userData!['following']?.length ?? 0}'), 
-                        const Text("following")
-                      ],
-                    )
-                  ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20,0,20,0),
+                        child: Row(
+                          children: [
+                            Text('${userDataController.userData!['bio'] ?? ''}'),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20,0,20,0),
+                        child: Row(
+                          children: [
+                            InkWell(child: Text('${userDataController.userData!['links'] ?? ''}', style: const TextStyle(
+                              color: Colors.blue,
+                            ),),),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20,),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
+                const SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                      child: Row(
-                        children: [
-                          Text('${userDataController.userData!['name'] ?? ''}'),
-                        ],
+                    MaterialButton(
+                      onPressed: (){
+                        GlobalRouter.I.router.go(EditProfileScreen.route);
+                      },
+                      minWidth: 150,
+                      height: 35,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      color: const Color.fromARGB(255, 40, 40, 40),
+                      child: const Text("Edit Profile"),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                      child: Row(
-                        children: [
-                          Text('${userDataController.userData!['bio'] ?? ''}'),
-                        ],
+                    const SizedBox(width: 15,),
+                    MaterialButton(
+                      onPressed: (){
+                        
+                      },
+                      minWidth: 150,
+                      height: 35,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      color: const Color.fromARGB(255, 40, 40, 40),
+                      child: const Text("Share Profile"),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                      child: Row(
-                        children: [
-                          InkWell(child: Text('${userDataController.userData!['links'] ?? ''}', style: const TextStyle(
-                            color: Colors.blue,
-                          ),),),
-                        ],
+                    const SizedBox(width: 15,),
+                    MaterialButton(
+                      onPressed: (){
+                        
+                      },
+                      minWidth: 35,
+                      height: 35,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      color: const Color.fromARGB(255, 40, 40, 40),
+                      child: const Icon(Icons.person_add),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MaterialButton(
-                    onPressed: (){
-                      GlobalRouter.I.router.go(EditProfileScreen.route);
-                    },
-                    minWidth: 150,
-                    height: 35,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    color: const Color.fromARGB(255, 40, 40, 40),
-                    child: const Text("Edit Profile"),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.white)
                   ),
-                  const SizedBox(width: 15,),
-                  MaterialButton(
-                    onPressed: (){
-                      
-                    },
-                    minWidth: 150,
-                    height: 35,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    color: const Color.fromARGB(255, 40, 40, 40),
-                    child: const Text("Share Profile"),
+                  child: const Row(
+                    children: [
+                      SizedBox(width: 10,),
+                      Column(
+                        children: [
+                          SizedBox(height: 10,),
+                          SizedBox(
+                            child: Stack(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  radius: 30,
+                                  child: CircleAvatar(
+                                    backgroundColor: Color.fromARGB(255, 40, 40, 40),
+                                    radius: 25,
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 15,
+                                  bottom: 15,
+                                  child: Icon(Icons.add, size: 30,))
+                              ],
+                            ),
+                          ),
+                          Text("New")
+                        ],
+                      )
+                    ],
                   ),
-                  const SizedBox(width: 15,),
-                  MaterialButton(
-                    onPressed: (){
-                      
-                    },
-                    minWidth: 35,
-                    height: 35,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    color: const Color.fromARGB(255, 40, 40, 40),
-                    child: const Icon(Icons.person_add),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Row(
+                  children: [
+                    Spacer(),
+                    Icon(Icons.view_comfy, size: 50,),
+                    Spacer(),
+                    Icon(Icons.view_comfy, size: 50),
+                    Spacer(),
+                    Icon(Icons.view_comfy, size: 50),
+                    Spacer(),
+                  ],
+                ),
+                const Center(
+                  child: Text('Profile Screen'),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 500,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.white)
                   ),
-                ],
-              ),
-              const Row(
-                children: [
-                  Spacer(),
-                  Icon(Icons.view_comfy, size: 50,),
-                  Spacer(),
-                  Icon(Icons.view_comfy, size: 50),
-                  Spacer(),
-                  Icon(Icons.view_comfy, size: 50),
-                  Spacer(),
-                ],
-              ),
-              const Center(
-                child: Text('Profile Screen'),
-              ),
-            ],
+                )
+              ],
+            ),
           ),
         );
       },
