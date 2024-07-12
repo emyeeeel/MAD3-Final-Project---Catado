@@ -65,6 +65,7 @@ class _EditUsernameState extends State<EditUsername> {
                             print('Error updating username: $e');
                             Navigator.pop(context);
                           }
+                GlobalRouter.I.router.go(EditProfileScreen.route);
               },
               child: const Text('Done', style: TextStyle(
                 fontSize: 18,

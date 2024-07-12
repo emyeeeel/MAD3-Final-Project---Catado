@@ -85,7 +85,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     showModalBottomSheet(
                       context: context, 
                       builder: (context) =>  Container(
-                        height: MediaQuery.of(context).size.height/2,
+                        height: (MediaQuery.of(context).size.height/2.5),
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.vertical(
                             top: Radius.circular(15),
@@ -96,7 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             const SizedBox(height: 10,),
                             Center(
                               child: Container(
-                                width: 50,
+                                width: 100,
                                 height: 5,
                                 decoration: BoxDecoration(
                                   color: Colors.grey,
@@ -104,7 +104,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20,),
+                            const SizedBox(height: 40,),
                             Row(
                               children: [
                                 Spacer(),
@@ -131,7 +131,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ],
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Column(
                                   children: [
                                     const CircleAvatar(
@@ -155,9 +155,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ],
                                 ),
-                                Spacer()
+                                const Spacer()
                               ],
-                            )
+                            ),
+                            const SizedBox(height: 30),
+                            const Row(
+                              children: [ 
+                                SizedBox(width: 20,),
+                                Icon(Icons.photo, size: 30,),
+                                SizedBox(width: 20,),
+                                Text('Choose from library', style: TextStyle(fontSize: 20),)
+                              ],
+                            ),
+                            const SizedBox(height: 20,),
+                            const Row(
+                              children: [ 
+                                SizedBox(width: 20,),
+                                Icon(Icons.photo, size: 30,),
+                                SizedBox(width: 20,),
+                                Text('Import from Google', style: TextStyle(fontSize: 20),)
+                              ],
+                            ),
+                            const SizedBox(height: 20,),
+                            const Row(
+                              children: [ 
+                                SizedBox(width: 20,),
+                                Icon(Icons.photo_camera, size: 30,),
+                                SizedBox(width: 20,),
+                                Text('Take a photo', style: TextStyle(fontSize: 20),)
+                              ],
+                            ),
+                            const SizedBox(height: 20,),
+                            const Row(
+                              children: [ 
+                                SizedBox(width: 20,),
+                                Icon(Icons.delete, size: 30, color: Colors.red,),
+                                SizedBox(width: 20,),
+                                Text('Remove current picture', style: TextStyle(fontSize: 20, color: Colors.red),)
+                              ],
+                            ),
                           ],
                         ),
                       )

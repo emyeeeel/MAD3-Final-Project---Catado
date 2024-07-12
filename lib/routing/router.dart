@@ -9,7 +9,7 @@ import 'package:finals/screens/home/edit_name.dart';
 import 'package:finals/screens/home/edit_profile_screen.dart';
 import 'package:finals/screens/home/edit_username.dart';
 import 'package:finals/screens/home/main_screens_wrapper.dart';
-import 'package:finals/screens/home/notification_screen.dart';
+import 'package:finals/screens/home/reels_screen.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:finals/screens/home/search_screen.dart';
 import 'package:flutter/material.dart';
@@ -136,10 +136,10 @@ class GlobalRouter{
                   }),
                   GoRoute(
                     parentNavigatorKey: _shellNavigatorKey,
-                    path: NotificationScreen.route,
-                    name: NotificationScreen.name,
+                    path: ReelsScreen.route,
+                    name: ReelsScreen.name,
                     builder: (context, _) {
-                      return const NotificationScreen();
+                      return const ReelsScreen();
                   }),
                   GoRoute(
                     parentNavigatorKey: _shellNavigatorKey,

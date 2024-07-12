@@ -1,5 +1,5 @@
 import 'package:finals/screens/home/create_screen.dart';
-import 'package:finals/screens/home/notification_screen.dart';
+import 'package:finals/screens/home/reels_screen.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:finals/screens/home/search_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   int index = 0;
-  List<String> routes = [HomeScreen.route, SearchScreen.route, CreateScreen.route, NotificationScreen.route, ProfileScreen.route];
+  List<String> routes = [HomeScreen.route, SearchScreen.route, CreateScreen.route, ReelsScreen.route, ProfileScreen.route];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +38,7 @@ class _WrapperState extends State<Wrapper> {
           BottomNavigationBarItem(icon: Icon(Icons.home, color: Colors.white,), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search, color: Colors.white), label: 'Search'),
           BottomNavigationBarItem(icon: Icon(Icons.add, color: Colors.white), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite, color: Colors.white), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.movie_creation_outlined, color: Colors.white), label: 'Reels'),
           BottomNavigationBarItem(icon: Icon(Icons.person, color: Colors.white), label: 'Profile'),
         ]
       ),
