@@ -1,3 +1,4 @@
+import 'package:finals/screens/home/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controllers/data_controller.dart';
@@ -46,7 +47,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const Spacer(),
                 const Icon(Icons.add_box_rounded),
                 const SizedBox(width: 25,),
-                const Icon(Icons.menu)
+                GestureDetector(
+                  onTap: (){
+                    GlobalRouter.I.router.go(SettingsScreen.route);
+                  },
+                  child: const Icon(Icons.menu))
               ],
             ),
           ),

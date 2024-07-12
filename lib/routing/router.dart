@@ -12,6 +12,7 @@ import 'package:finals/screens/home/main_screens_wrapper.dart';
 import 'package:finals/screens/home/reels_screen.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:finals/screens/home/search_screen.dart';
+import 'package:finals/screens/home/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -109,6 +110,13 @@ class GlobalRouter{
             name: EditBio.name,
             builder: (context, _) {
               return const EditBio();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: SettingsScreen.route,
+            name: SettingsScreen.name,
+            builder: (context, _) {
+              return const SettingsScreen();
           }),
           ShellRoute(
               navigatorKey: _shellNavigatorKey,

@@ -21,21 +21,24 @@ class _CreateScreenState extends State<CreateScreen> {
   @override
   Widget build(BuildContext context) {      
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: MaterialButton(
-              color: Colors.blue,
-              onPressed: () {
-                _pickImageFromGallery();
-              },
-              child: Text("Upload"),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 50,),
+            Center(
+              child: MaterialButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _pickImageFromGallery();
+                },
+                child: Text("Upload"),
+              ),
             ),
-          ),
-          const SizedBox(height: 20,),
-          _selectedImage != null ? Image.file(_selectedImage!) : const Text("Please select an image")
-        ],
+            const SizedBox(height: 20,),
+            _selectedImage != null ? Image.file(_selectedImage!) : const Text("Please select an image")
+          ],
+        ),
       ),
     );
   }
