@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+
+import '../../widgets.dart/reels_item.dart';
 
 class ReelsScreen extends StatefulWidget {
   static const String route = '/notification';
@@ -12,51 +14,32 @@ class ReelsScreen extends StatefulWidget {
 }
 
 class _ReelsScreenState extends State<ReelsScreen> {
-  late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
-  String url = '';
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    );
-
-    _initializeVideoPlayerFuture = _controller.initialize();
-    _controller.setLooping(true);
-    _controller.play();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _initializeVideoPlayerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: VideoPlayer(_controller),
-                )
-              ],
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: StreamBuilder(
+          stream: _firestore
+              .collection('reels')
+              .orderBy('time', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            return PageView.builder(
+              scrollDirection: Axis.vertical,
+              controller: PageController(initialPage: 0, viewportFraction: 1),
+              itemBuilder: (context, index) {
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+                return ReelsItem(snapshot.data!.docs[index].data());
+              },
+              itemCount: snapshot.data == null ? 0 : snapshot.data!.docs.length,
             );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+          },
+        ),
       ),
-      // Remove the floating action button that toggles play/pause
     );
-  }
-}
+}}
