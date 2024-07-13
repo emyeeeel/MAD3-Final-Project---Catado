@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:finals/screens/home/edit_bio.dart';
 import 'package:finals/screens/home/edit_name.dart';
 import 'package:finals/screens/home/edit_username.dart';
@@ -11,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../controllers/data_controller.dart';
 import '../../routing/router.dart';
+import '../../services/files_services.dart';
 
 class EditProfileScreen extends StatefulWidget {
 
@@ -34,6 +36,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool isSelected = true;
 
   File? _selectedImage;
+  FilesServices _fileServices = FilesServices();
 
   @override
   void initState() {
@@ -43,21 +46,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .listen(FirebaseAuth.instance.currentUser?.uid ?? 'unknown');
   }
   
-  Future _pickImageFromGallery() async{
-    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if(returnedImage == null) return;
+  Future<void> _pickImageFromGallery() async {
+    PlatformFile? pickedFile = await _fileServices.selectFile();
+    if (pickedFile == null) return;
+
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      _selectedImage = File(pickedFile.path!);
     });
+
     _showImageDialog(_selectedImage);
   }
 
-  Future _pickImageFromCamera() async{
-    final returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-    if(returnedImage == null) return;
+  Future<void> _pickImageFromCamera() async {
+    PlatformFile? pickedFile = await _fileServices.selectFile();
+    if (pickedFile == null) return;
+
     setState(() {
-      _selectedImage = File(returnedImage.path);
+      _selectedImage = File(pickedFile.path!);
     });
+
     _showImageDialog(_selectedImage);
   }
 
@@ -65,22 +72,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Selected Image'),
+        title: Text('Set as Profile Picture'),
         content: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.file(imageFile!),
-              SizedBox(height: 20),
-              Text('Image Path: ${imageFile.path}'),
-            ],
-          ),
+          child: SizedBox(
+            width: 250,
+            height: 250,
+            child: Image.file(imageFile!)),
         ),
         actions: [
           TextButton(
             onPressed: () {
+              
+            },
+            child: const Text('Done'),
+          ),
+          TextButton(
+            onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: const Text('Cancel'),
           ),
         ],
       ),
