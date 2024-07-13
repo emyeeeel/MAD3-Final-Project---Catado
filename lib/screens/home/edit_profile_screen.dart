@@ -1,10 +1,13 @@
 
+import 'dart:io';
+
 import 'package:finals/screens/home/edit_bio.dart';
 import 'package:finals/screens/home/edit_name.dart';
 import 'package:finals/screens/home/edit_username.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../controllers/data_controller.dart';
 import '../../routing/router.dart';
@@ -29,6 +32,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController pronouns = TextEditingController();
   TextEditingController bio = TextEditingController();
   bool isSelected = true;
+
+  File? _selectedImage;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +43,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .listen(FirebaseAuth.instance.currentUser?.uid ?? 'unknown');
   }
   
+  Future _pickImageFromGallery() async{
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(returnedImage == null) return;
+    setState(() {
+      _selectedImage = File(returnedImage.path);
+    });
+    _showImageDialog(_selectedImage);
+  }
+
+  Future _pickImageFromCamera() async{
+    final returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+    if(returnedImage == null) return;
+    setState(() {
+      _selectedImage = File(returnedImage.path);
+    });
+    _showImageDialog(_selectedImage);
+  }
+
+  void _showImageDialog(File? imageFile) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Selected Image'),
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              Image.file(imageFile!),
+              SizedBox(height: 20),
+              Text('Image Path: ${imageFile.path}'),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,13 +210,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 30),
-                            const Row(
-                              children: [ 
-                                SizedBox(width: 20,),
-                                Icon(Icons.photo, size: 30,),
-                                SizedBox(width: 20,),
-                                Text('Choose from library', style: TextStyle(fontSize: 20),)
-                              ],
+                            GestureDetector(
+                              onTap: (){
+                                _pickImageFromGallery();
+                              },
+                              child: const Row(
+                                children: [ 
+                                  SizedBox(width: 20,),
+                                  Icon(Icons.photo, size: 30,),
+                                  SizedBox(width: 20,),
+                                  Text('Choose from library', style: TextStyle(fontSize: 20),)
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 20,),
                             const Row(
@@ -177,13 +233,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 20,),
-                            const Row(
-                              children: [ 
-                                SizedBox(width: 20,),
-                                Icon(Icons.photo_camera, size: 30,),
-                                SizedBox(width: 20,),
-                                Text('Take a photo', style: TextStyle(fontSize: 20),)
-                              ],
+                            GestureDetector(
+                              onTap: () {
+                                _pickImageFromCamera();
+                              },
+                              child: const Row(
+                                children: [ 
+                                  SizedBox(width: 20,),
+                                  Icon(Icons.photo_camera, size: 30,),
+                                  SizedBox(width: 20,),
+                                  Text('Take a photo', style: TextStyle(fontSize: 20),)
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 20,),
                             const Row(
