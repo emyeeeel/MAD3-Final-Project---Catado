@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class CreateScreen extends StatefulWidget {
 
@@ -16,7 +18,30 @@ class CreateScreen extends StatefulWidget {
 
 class _CreateScreenState extends State<CreateScreen> {
 
-  File ? _selectedImage;
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if(result == null) return;
+    setState(() {
+      pickedFile = result.files.first;
+    });
+  }
+
+  Future uploadFile() async {
+    final path = 'posts/${pickedFile!.name}';
+    final file = File(pickedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(file);
+
+    final snapshot = await uploadTask!.whenComplete((){});
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    print('Download URL: ${urlDownload}');
+  }
+
 
   @override
   Widget build(BuildContext context) {      
@@ -26,28 +51,36 @@ class _CreateScreenState extends State<CreateScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 50,),
+            if(pickedFile != null)
+              Container(
+                width: 500,
+                height: 500,
+                child: Center(
+                  child: Image.file(
+                    File(pickedFile!.path!),
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             Center(
               child: MaterialButton(
                 color: Colors.blue,
-                onPressed: () {
-                  _pickImageFromGallery();
-                },
-                child: Text("Upload"),
+                onPressed: selectFile,
+                child: Text("Select File"),
               ),
             ),
-            const SizedBox(height: 20,),
-            _selectedImage != null ? Image.file(_selectedImage!) : const Text("Please select an image")
+            Center(
+              child: MaterialButton(
+                color: Colors.blue,
+                onPressed: uploadFile,
+                child: Text("Upload File"),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  Future _pickImageFromGallery() async {
-    final returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      _selectedImage = File(returnedImage!.path);
-    });
-  }
+  
 }
