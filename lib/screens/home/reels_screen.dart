@@ -1,13 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../../widgets.dart/reels_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../widgets/reels_item.dart';
 
 class ReelsScreen extends StatefulWidget {
-  static const String route = '/notification';
-  static const String name = "Notification Screen";
+  static const String route = '/reels';
+  static const String name = "Reels Screen";
 
-  const ReelsScreen({Key? key}) : super(key: key);
+  const ReelsScreen({super.key});
 
   @override
   State<ReelsScreen> createState() => _ReelsScreenState();
@@ -25,14 +24,14 @@ class _ReelsScreenState extends State<ReelsScreen> {
           stream: _firestore
               .collection('reels')
               .orderBy('time', descending: true)
-              .snapshots(), 
+              .snapshots(),
           builder: (context, snapshot) {
             return PageView.builder(
               scrollDirection: Axis.vertical,
               controller: PageController(initialPage: 0, viewportFraction: 1),
               itemBuilder: (context, index) {
                 if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
                 return ReelsItem(snapshot.data!.docs[index].data());
               },
@@ -42,4 +41,5 @@ class _ReelsScreenState extends State<ReelsScreen> {
         ),
       ),
     );
-}}
+  }
+}

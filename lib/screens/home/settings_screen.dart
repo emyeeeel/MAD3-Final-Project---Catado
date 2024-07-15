@@ -24,7 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             GlobalRouter.I.router.go(ProfileScreen.route);
           },
           child: Icon(Icons.arrow_back_ios_new_rounded)),
-        title: Text("Settings and Activity"),
+        title: const Text("Settings and Activity"),
         centerTitle: true,
       ),
       body: Center(

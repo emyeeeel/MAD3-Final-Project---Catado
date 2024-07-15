@@ -13,7 +13,7 @@ class FilesServices {
     return result.files.first;
   }
 
-  Future<void> uploadFile(PlatformFile pickedFile) async {
+  Future<String> uploadFile(PlatformFile pickedFile) async {
     final path = 'posts/${pickedFile.name}';
     final file = File(pickedFile.path!);
 
@@ -23,8 +23,7 @@ class FilesServices {
     await uploadTask.whenComplete(() {});
     final urlDownload = await ref.getDownloadURL();
     print('Download URL: $urlDownload');
-
-    await storeFileInfoToFirestore(pickedFile.name, urlDownload);
+    return urlDownload;
   }
 
   Future<void> storeFileInfoToFirestore(String fileName, String urlDownload) async {

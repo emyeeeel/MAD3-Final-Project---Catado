@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreServices {
   static Future storeUser(String email, String uid) async {
@@ -22,6 +23,7 @@ class FirestoreServices {
     }
     return user.data();
   }
+
 
   static String getEmailUsername(String email) {
     int indexOfAt = email.indexOf('@');

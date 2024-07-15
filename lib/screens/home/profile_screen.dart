@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/screens/home/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +18,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late UserDataController userDataController;
-
   @override
   void initState() {
     super.initState();
@@ -251,6 +251,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 500,
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.white)
+                  ),
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('posts').snapshots(), 
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+                    if (snapshot.data!.docs.isEmpty) {
+                      return Text('No posts found');
+                    }
+                    List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+  ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                    return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, 
+                        mainAxisSpacing: 8.0, 
+                        crossAxisSpacing: 8.0, 
+                      ),
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final doc = sortedDocs[index];
+                        final String postId = doc.id;
+                        final Timestamp postTime = doc.get('time');
+                        final DocumentReference userRef = doc.get('user');
+                        final String url = doc.get('photoUrl');
+                        return SizedBox(
+                          child: Image.network(url, fit: BoxFit.cover,),
+                        );
+                      }, 
+                    );
+                  },
                   ),
                 )
               ],

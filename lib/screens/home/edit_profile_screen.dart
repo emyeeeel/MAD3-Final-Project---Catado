@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:finals/screens/home/edit_bio.dart';
 import 'package:finals/screens/home/edit_name.dart';
@@ -8,7 +9,6 @@ import 'package:finals/screens/home/edit_username.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../controllers/data_controller.dart';
 import '../../routing/router.dart';
@@ -36,7 +36,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool isSelected = true;
 
   File? _selectedImage;
-  FilesServices _fileServices = FilesServices();
+  final FilesServices _filesServices = FilesServices(); 
+  PlatformFile? pickedFile;
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
   
   Future<void> _pickImageFromGallery() async {
-    PlatformFile? pickedFile = await _fileServices.selectFile();
+    PlatformFile? pickedFile = await _filesServices.selectFile();
     if (pickedFile == null) return;
 
     setState(() {
@@ -58,7 +59,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    PlatformFile? pickedFile = await _fileServices.selectFile();
+    PlatformFile? pickedFile = await _filesServices.selectFile();
     if (pickedFile == null) return;
 
     setState(() {
@@ -72,7 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Set as Profile Picture'),
+        title: const Text('Set as Profile Picture'),
         content: SingleChildScrollView(
           child: SizedBox(
             width: 250,
@@ -81,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               
             },
             child: const Text('Done'),
@@ -221,8 +222,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             const SizedBox(height: 30),
                             GestureDetector(
-                              onTap: (){
-                                _pickImageFromGallery();
+                              onTap: () async {
+                                PlatformFile? file = await _filesServices.selectFile();
+                                if (file != null) {
+                                  setState(() {
+                                    pickedFile = file;
+                                  });
+                                }
+                                showDialog(
+                                              context: context, 
+                                              builder: (context) {
+                                                return const Center(child: CircularProgressIndicator());
+                                              }
+                                            );
+                                final urlDownload = _filesServices.uploadFile(pickedFile!);
+                                String uid = FirebaseAuth.instance.currentUser!.uid;
+                                try {
+                                  await FirebaseFirestore.instance.collection('users').doc(uid).update({
+                                    'profileImageUrl': urlDownload,
+                                  });
+                                  print('Profile pic added successfully');
+                                  Navigator.pop(context);
+                                } catch (e) {
+                                  print('Error updating: $e');
+                                  Navigator.pop(context);
+                                }
                               },
                               child: const Row(
                                 children: [ 
