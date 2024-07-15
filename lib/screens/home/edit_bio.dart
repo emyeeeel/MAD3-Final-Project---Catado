@@ -66,6 +66,7 @@ class _EditBioState extends State<EditBio> {
                   print('Error updating bio: $e');
                   Navigator.pop(context);
                 }
+                GlobalRouter.I.router.go(EditProfileScreen.route);
               },
               child: const Text(
                 'Done',

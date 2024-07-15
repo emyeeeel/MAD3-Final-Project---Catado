@@ -253,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(width: 1, color: Colors.white)
                   ),
                   child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection('posts').snapshots(), 
+                    stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Something went wrong');
@@ -265,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       return Text('No posts found');
                     }
                     List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
-  ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                    ..sort((a, b) => b.get('time').compareTo(a.get('time')));
                     return GridView.builder(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, 

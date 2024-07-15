@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/controllers/auth_controller.dart';
 import 'package:finals/routing/router.dart';
 import 'package:finals/screens/auth/login_screen.dart';
@@ -109,12 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
               MaterialButton(
                 color: Colors.blueGrey,
                 onPressed: (){
-                  GlobalRouter.I.router.go(LoginScreen.route);
-                }
-              ),
-              MaterialButton(
-                color: Colors.blueGrey,
-                onPressed: (){
                   AuthController.I.logout();
                 },
                 child: Text('Log out'),
@@ -130,6 +125,55 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Text('Check current user'),
               ),
+              Container(
+                  width: double.infinity,
+                  height: 500,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.white)
+                  ),
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(), //where user ref userId should be current authenticated user uid
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+                    if (snapshot.data!.docs.isEmpty) {
+                      return Text('No posts found');
+                    }
+                    List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                    ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final doc = sortedDocs[index];
+                        final String postId = doc.id;
+                        final Timestamp postTime = doc.get('time');
+                        final DocumentReference userRef = doc.get('user');
+                        // final DocumentSnapshot userData = userRef.
+                        final String url = doc.get('photoUrl');
+                        return SizedBox(
+                          child: Column(
+                            children: [
+                              Image.network(url, fit: BoxFit.cover,),
+                              Row(
+                                children: [
+                                  Icon(Icons.favorite),
+                                  Icon(Icons.comment),
+                                  Icon(Icons.send),
+                                ],
+                              ),
+                              Text('${userRef}')
+                            ],
+                          ),
+                        );
+                      }, 
+                    );
+                  },
+                  ),
+                )
             ],
           );
         }
