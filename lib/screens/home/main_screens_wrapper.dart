@@ -34,13 +34,28 @@ class _WrapperState extends State<Wrapper> {
             GlobalRouter.I.router.go(routes[i]);
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home, color: Colors.white,), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search, color: Colors.white), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.add, color: Colors.white), label: 'Create'),
-          BottomNavigationBarItem(icon: Icon(Icons.movie_creation_outlined, color: Colors.white), label: 'Reels'),
-          BottomNavigationBarItem(icon: Icon(Icons.person, color: Colors.white), label: 'Profile'),
-        ]
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(index == 0 ? Icons.home : Icons.home_outlined, color: Colors.white),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(index == 1 ? Icons.search : Icons.search_outlined, color: Colors.white),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(index == 2 ? Icons.add : Icons.add_outlined, color: Colors.white),
+            label: 'Create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(index == 3 ? Icons.movie_creation : Icons.movie_creation_outlined, color: Colors.white),
+            label: 'Reels',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(index == 4 ? Icons.person : Icons.person_outline, color: Colors.white),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

@@ -26,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? 'unknown';
     userDataController.listen(userId);
   }
+
+  String photoUrl = 'https://th.bing.com/th/id/OIP.3r9s8Je-O4D4ciaYlep3FgHaHY?rs=1&pid=ImgDetMain';
+  String caption = 'Hi, blooms! <3';
   
   @override
   Widget build(BuildContext context) {
@@ -103,48 +106,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: SizedBox(
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(), 
-                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text('Something went wrong');
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text("Loading");
-                      }
-                      if (snapshot.data!.docs.isEmpty) {
-                        return Text('No posts found');
+                   child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator(); 
                       }
                       List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
-                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                        ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                      List<DocumentSnapshot> posts = [];
+                      int length = 0;
+                      for (var doc in sortedDocs) {
+                        for(var users in userDataController.userData!['following']){
+                          if(doc['user'] == users){
+                            length++;
+                            posts.add(doc);
+                          }
+                        }
+                      }
                       return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          final doc = sortedDocs[index];
-                          final DocumentReference userRef = doc.get('user');
-
-                          return SizedBox(
-                            child: FutureBuilder<DocumentSnapshot>(
-                            future: userRef.get(),
+                        itemCount: length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final doc = posts[index];
+                          DocumentReference userRef = doc['user']; 
+                          return FutureBuilder<DocumentSnapshot>(
+                            future: userRef.get(), 
                             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
-                              if (userSnapshot.hasError) {
-                                return Text('Error retrieving user');
-                              }
                               if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return CircularProgressIndicator(); 
+                              } else if (userSnapshot.hasError) {
+                                return Text('Error: ${userSnapshot.error}');
+                              } else {
+                                final user = userSnapshot.data!;
+                                return PostItem(postSnapshot: doc, userSnapshot: user);
                               }
-                              if (!userSnapshot.hasData) {
-                                return Text('User not found');
-                              }
-                              final userData = userSnapshot.data!;
-                              return PostItem(postSnapshot: doc, userSnapshot: userData);
                             },
-                          ),
                           );
-                        }, 
+                        },
                       );
                     },
-                    ),
+                  ),
                   ),
               )
             ],

@@ -33,34 +33,6 @@ class UserDataController with ChangeNotifier {
   }
 }
 
-class PostDataController with ChangeNotifier {
-  ValueNotifier<PostModel?> postModelNotifier = ValueNotifier(null);
-
-  setUserModel(PostModel post) {
-    postModelNotifier.value = post;
-  }
-
-  Map<String, dynamic>? postData;
-
-  StreamSubscription? postStream;
-
-  listen(String uid) {
-    postStream ??= FirebaseFirestore.instance
-        .collection("posts")
-        .orderBy('time', descending: true)
-        .where("user", isEqualTo: uid)
-        .snapshots()
-        .listen(onDataChange as void Function(QuerySnapshot<Map<String, dynamic>> event)?);
-  }
-
-  onDataChange(DocumentSnapshot<Map<String, dynamic>> data) {
-    if (data.exists) {
-      postData = data.data();
-      notifyListeners();
-    }
-  }
-}
-
 
 
 

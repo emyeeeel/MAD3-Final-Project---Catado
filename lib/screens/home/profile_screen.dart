@@ -232,17 +232,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Row(
-                  children: [
-                    Spacer(),
-                    Icon(Icons.view_comfy, size: 50,),
-                    Spacer(),
-                    Icon(Icons.view_comfy, size: 50),
-                    Spacer(),
-                    Icon(Icons.view_comfy, size: 50),
-                    Spacer(),
-                  ],
-                ),
                 const Center(
                   child: Text('Profile Screen'),
                 ),
@@ -252,40 +241,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.white)
                   ),
-                  child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Something went wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
-                    }
-                    if (snapshot.data!.docs.isEmpty) {
-                      return Text('No posts found');
-                    }
-                    List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
-                    ..sort((a, b) => b.get('time').compareTo(a.get('time')));
-                    return GridView.builder(
+                  child: GridView.builder(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, 
                         mainAxisSpacing: 8.0, 
                         crossAxisSpacing: 8.0, 
                       ),
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: userDataController.userData!['posts'].length,
                       itemBuilder: (context, index) {
-                        final doc = sortedDocs[index];
-                        final String postId = doc.id;
-                        final Timestamp postTime = doc.get('time');
-                        final DocumentReference userRef = doc.get('user');
-                        final String url = doc.get('photoUrl');
-                        return SizedBox(
-                          child: Image.network(url, fit: BoxFit.cover,),
+                        final doc = userDataController.userData!['posts'][index];
+                        return FutureBuilder<DocumentSnapshot>(
+                          future: doc.get(), 
+                          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                            if (userSnapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator(); 
+                            } else if (userSnapshot.hasError) {
+                              return Text('Error: ${userSnapshot.error}');
+                            } else {
+                              final post = userSnapshot.data!;
+                              return Image.network(post['photoUrl'], fit: BoxFit.cover,);
+                            }
+                          },
                         );
                       }, 
-                    );
-                  },
-                  ),
+                    )
                 )
               ],
             ),
