@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -149,6 +151,17 @@ class _ReelsItemState extends State<ReelsItem> {
                                 List<DocumentReference> existingPosts = List.from(userDocSnapshot.get('following') ?? []);
                                 existingPosts.add(widget.snapshot['user']);
                                 await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({'following': existingPosts});
+                                try{
+                                  DocumentSnapshot userSnapshot = await widget.snapshot['user'].get();
+                                  List<DocumentReference> existingFollowers = List.from(userSnapshot.get('followers') ?? []);
+                                  existingFollowers.add(FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid));
+                                  await widget.snapshot['user'].update({'followers': existingFollowers});
+                                  print('Followers added!');
+                                  Map<String, dynamic> documentData = userSnapshot.data() as Map<String, dynamic>;
+                                  print('Display: ${documentData['name']}');
+                                }catch (e){
+                                  print('Error 2: $e');
+                                }
                               }catch (e){
                                 print('Error: $e');
                               }

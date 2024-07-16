@@ -58,10 +58,7 @@ class _ShowFollowersScreenState extends State<ShowFollowersScreen> {
                   return CircularProgressIndicator(); 
                 }
                 Map<String, dynamic> documentData = snapshot.data!.data() as Map<String, dynamic>;
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.white)
-                      ),
+                    return SizedBox(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0,10,0,10),
                         child: Row(

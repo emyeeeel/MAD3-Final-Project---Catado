@@ -68,28 +68,33 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
-          body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) {
-                        return CircularProgressIndicator(); 
-                      }
-                      List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
-                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, 
-                        mainAxisSpacing: 8.0, 
-                        crossAxisSpacing: 8.0, 
-                      ),
-                itemCount: sortedDocs.length, 
-                      itemBuilder: (context, index) {
-                        final doc = sortedDocs[index];
-                        return Image.network(doc['photoUrl'], fit: BoxFit.cover,);
-
-                      }
-              );
-            }
+          body: Padding(
+            padding: const EdgeInsets.fromLTRB(0,20,0,0),
+            child: SizedBox(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                            return CircularProgressIndicator(); 
+                          }
+                          List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                          ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, 
+                            mainAxisSpacing: 8.0, 
+                            crossAxisSpacing: 8.0, 
+                          ),
+                    itemCount: sortedDocs.length, 
+                          itemBuilder: (context, index) {
+                            final doc = sortedDocs[index];
+                            return Image.network(doc['photoUrl'], fit: BoxFit.cover,);
+              
+                          }
+                  );
+                }
+              ),
+            ),
           ),
         );
       }

@@ -207,13 +207,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
+                const SizedBox(
                   width: double.infinity,
                   height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.white)
-                  ),
-                  child: const Row(
+                  child: Row(
                     children: [
                       SizedBox(width: 10,),
                       Column(
@@ -237,6 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 5,),
                           Text("New")
                         ],
                       )
