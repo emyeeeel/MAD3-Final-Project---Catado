@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/controllers/data_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
 
   late UserDataController userDataController;
+  
     @override
   void initState() {
     super.initState();
@@ -66,8 +68,28 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
-          body: Center(
-            child: Text('Search')
+          body: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                        return CircularProgressIndicator(); 
+                      }
+                      List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, 
+                        mainAxisSpacing: 8.0, 
+                        crossAxisSpacing: 8.0, 
+                      ),
+                itemCount: sortedDocs.length, 
+                      itemBuilder: (context, index) {
+                        final doc = sortedDocs[index];
+                        return Image.network(doc['photoUrl'], fit: BoxFit.cover,);
+
+                      }
+              );
+            }
           ),
         );
       }

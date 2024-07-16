@@ -31,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListenableBuilder(
       listenable: userDataController,
       builder: (context, _) {
+
         if (userDataController.userData == null) {
             return const Center(
               child: CircularProgressIndicator(), 
@@ -241,30 +242,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.white)
                   ),
-                  child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, 
-                        mainAxisSpacing: 8.0, 
-                        crossAxisSpacing: 8.0, 
-                      ),
-                      itemCount: userDataController.userData!['posts'].length,
-                      itemBuilder: (context, index) {
-                        final doc = userDataController.userData!['posts'][index];
-                        return FutureBuilder<DocumentSnapshot>(
-                          future: doc.get(), 
-                          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
-                            if (userSnapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator(); 
-                            } else if (userSnapshot.hasError) {
-                              return Text('Error: ${userSnapshot.error}');
-                            } else {
-                              final post = userSnapshot.data!;
-                              return Image.network(post['photoUrl'], fit: BoxFit.cover,);
-                            }
-                          },
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator(); 
+                      }
+                      List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                      return GridView.builder(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, 
+                            mainAxisSpacing: 8.0, 
+                            crossAxisSpacing: 8.0, 
+                          ),
+                          itemCount: sortedDocs.length, 
+                          itemBuilder: (context, index) {
+                            final doc = sortedDocs[index];
+                            return Image.network(doc['photoUrl'], fit: BoxFit.cover,);
+                          }, 
                         );
-                      }, 
-                    )
+                    }
+                  )
                 )
               ],
             ),

@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_player/video_player.dart';
 
+import '../controllers/data_controller.dart';
+
 class ReelsItem extends StatefulWidget {
   final Map<String, dynamic> snapshot;
-  const ReelsItem(this.snapshot, {Key? key}) : super(key: key);
+  const ReelsItem(this.snapshot, {super.key});
 
   @override
   State<ReelsItem> createState() => _ReelsItemState();
@@ -12,29 +15,8 @@ class ReelsItem extends StatefulWidget {
 
 class _ReelsItemState extends State<ReelsItem> {
   late VideoPlayerController controller;
+  UserDataController userDataController = UserDataController();
   bool play = true;
-  String name = '';
-  String userProfilePic = '';
-  int likes = 0;
-
-  void getUserData() async {
-    DocumentReference reelsDocRef =
-    FirebaseFirestore.instance.collection('reels').doc(widget.snapshot['reelsId']);
-    DocumentSnapshot reelsDoc = await reelsDocRef.get();
-    DocumentReference userRef = reelsDoc.get('user');
-    DocumentSnapshot userDoc = await userRef.get();
-
-    if (userDoc.exists) {
-      setState(() {
-        name = userDoc['displayName'];
-        userProfilePic = userDoc['profileImageUrl'];
-        likes = userDoc['likes'];
-      });
-    } else {
-      print('User document does not exist');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -46,15 +28,8 @@ class _ReelsItemState extends State<ReelsItem> {
           controller.play();
         });
       });
-    getUserData();
-  }
-
-  @override
-  void didUpdateWidget(covariant ReelsItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.snapshot['reelsId'] != widget.snapshot['reelsId']) {
-      getUserData();
-    }
+    userDataController
+        .listen(FirebaseAuth.instance.currentUser?.uid ?? 'unknown');
   }
 
   @override
@@ -65,133 +40,155 @@ class _ReelsItemState extends State<ReelsItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              play = !play;
-            });
-            if (play) {
-              controller.play();
-            } else {
-              controller.pause();
-            }
-          },
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: VideoPlayer(controller),
-          ),
-        ),
-        if (!play)
-          Center(
-            child: CircleAvatar(
-              backgroundColor: Colors.white30,
-              radius: 35,
-              child: Icon(
-                Icons.play_arrow,
-                size: 35,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          Positioned(
-          bottom: 100,
-          right: 15,
-          child: Column(
-            children: [
-              Icon(
-                    Icons.favorite,
-                    size: 24,
+    return ListenableBuilder(
+      listenable: userDataController,
+      builder: (context, snapshot) {
+        return FutureBuilder<DocumentSnapshot>(
+          future: widget.snapshot['user'].get(),
+          builder: (context, snapshot) {
+            final userData = snapshot.data!;
+            return Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      play = !play;
+                    });
+                    if (play) {
+                      controller.play();
+                    } else {
+                      controller.pause();
+                    }
+                  },
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: VideoPlayer(controller),
                   ),
-                  SizedBox(height: 3),
-              Text(
-                likes.toString(),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
                 ),
-              ),
-              SizedBox(height: 15),
-              Icon(
-                Icons.comment,
-                color: Colors.white,
-                size: 28,
-              ),
-              SizedBox(height: 3),
-              Text(
-                '0',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 15),
-              Icon(
-                Icons.send,
-                color: Colors.white,
-                size: 28,
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          bottom: 40,
-          left: 10,
-          right: 0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: userProfilePic.isNotEmpty
-                        ? NetworkImage(userProfilePic)
-                        : const NetworkImage(
-                            'https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain'),
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    alignment: Alignment.center,
-                    width: 60,
-                    height: 25,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      'Follow',
-                      style: TextStyle(
-                        fontSize: 13,
+                if (!play)
+                  const Center(
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white30,
+                      radius: 35,
+                      child: Icon(
+                        Icons.play_arrow,
+                        size: 35,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                widget.snapshot['caption'],
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.white,
+                  Positioned(
+                  bottom: 100,
+                  right: 15,
+                  child: Column(
+                    children: [
+                      const Icon(
+                            Icons.favorite,
+                            size: 24,
+                          ),
+                      const SizedBox(height: 3),
+                      Text(
+                        widget.snapshot['likes'].toString(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      const Icon(
+                        Icons.comment,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        widget.snapshot['comments'].length.toString(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      const Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        )
-      ],
+                Positioned(
+                  bottom: 40,
+                  left: 10,
+                  right: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(userData['profileImageUrl'] ?? 'https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain')
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            '${userData['displayName']}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          userDataController.userData!['following'].contains(widget.snapshot['user']) ? const Text('') :
+                          GestureDetector(
+                            onTap: () async {
+                              try{
+                                DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+                                List<DocumentReference> existingPosts = List.from(userDocSnapshot.get('following') ?? []);
+                                existingPosts.add(widget.snapshot['user']);
+                                await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({'following': existingPosts});
+                              }catch (e){
+                                print('Error: $e');
+                              }
+
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 60,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: const Text(
+                                'Follow',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.snapshot['caption'],
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          }
+        );
+      }
     );
   }
 }

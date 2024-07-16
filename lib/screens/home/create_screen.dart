@@ -17,6 +17,7 @@ class CreateScreen extends StatefulWidget {
 class _CreateScreenState extends State<CreateScreen> {
   final FilesServices _filesServices = FilesServices(); 
   PlatformFile? pickedFile;
+  TextEditingController caption = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,13 @@ class _CreateScreenState extends State<CreateScreen> {
                     });
                   }
                 },
-                child: Text("Select File"),
+                child: const Text("Select File"),
+              ),
+            ),
+            TextField(
+              controller: caption,
+              decoration: InputDecoration(
+                labelText: 'Caption here'
               ),
             ),
             Center(
@@ -72,10 +79,10 @@ class _CreateScreenState extends State<CreateScreen> {
                 color: Colors.blue,
                 onPressed: () async {
                   if (pickedFile != null) {
-                    await _filesServices.uploadFile(pickedFile!, 'Test caption');
+                    await _filesServices.uploadFile(pickedFile!, caption.text.trim());
                   }
                 },
-                child: Text("Upload File"),
+                child: const Text("Upload File"),
               ),
             ),
           ],

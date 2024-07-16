@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../widgets/reels_item.dart';
@@ -23,19 +24,21 @@ class _ReelsScreenState extends State<ReelsScreen> {
         child: StreamBuilder(
           stream: _firestore
               .collection('reels')
-              .orderBy('time', descending: true)
+              .where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid))
               .snapshots(),
           builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+                        return const CircularProgressIndicator(); 
+                      }
+                      List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
             return PageView.builder(
               scrollDirection: Axis.vertical,
               controller: PageController(initialPage: 0, viewportFraction: 1),
+              itemCount: sortedDocs.length,
               itemBuilder: (context, index) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
                 return ReelsItem(snapshot.data!.docs[index].data());
               },
-              itemCount: snapshot.data == null ? 0 : snapshot.data!.docs.length,
             );
           },
         ),
