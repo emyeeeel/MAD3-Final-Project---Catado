@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/screens/home/settings_screen.dart';
+import 'package:finals/screens/home/showList_post.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controllers/data_controller.dart';
@@ -259,7 +260,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           itemCount: sortedDocs.length, 
                           itemBuilder: (context, index) {
                             final doc = sortedDocs[index];
-                            return Image.network(doc['photoUrl'], fit: BoxFit.cover,);
+                            return GestureDetector(
+                              onTap: () {
+                                GlobalRouter.I.router.go(ShowUserPostsScreen.route);
+                              },
+                              child: Image.network(doc['photoUrl'], fit: BoxFit.cover,));
                           }, 
                         );
                     }
