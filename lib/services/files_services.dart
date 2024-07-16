@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FilesServices {
   Future<PlatformFile?> selectFile() async {
@@ -13,7 +13,21 @@ class FilesServices {
     return result.files.first;
   }
 
-  Future<String> uploadFile(PlatformFile pickedFile) async {
+  Future<String> uploadFile(PlatformFile pickedFile, String caption) async {
+    final path = 'posts/${pickedFile.name}';
+    final file = File(pickedFile.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    UploadTask uploadTask = ref.putFile(file);
+
+    await uploadTask.whenComplete(() {});
+    final urlDownload = await ref.getDownloadURL();
+    print('Download URL: $urlDownload');
+    await storePostToFirestore(urlDownload, caption);
+    return urlDownload;
+  }
+
+  Future<String> uploadProfilePhoto(PlatformFile pickedFile) async {
     final path = 'posts/${pickedFile.name}';
     final file = File(pickedFile.path!);
 
@@ -26,19 +40,26 @@ class FilesServices {
     return urlDownload;
   }
 
-  Future<void> storeFileInfoToFirestore(String fileName, String urlDownload) async {
-    // Example of adding to Firestore
+
+  Future<void> storePostToFirestore(String url, String caption) async {
     try {
-      // Assuming you have a 'reels' collection in Firestore
-      await FirebaseFirestore.instance.collection('reels').add({
-        'fileName': fileName,
-        'reelsvideo': urlDownload,
-        'time': DateTime.now(),
+
+      DocumentReference postRef = await FirebaseFirestore.instance.collection('posts').add({
+        'photoUrl': url,
+        'caption': caption,
+        'user': FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid),
+        'time': FieldValue.serverTimestamp(),
       });
+
+      await postRef.update({'postId': postRef.id});
+
+      DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).get();
+      List<DocumentReference> existingPosts = List.from(userDocSnapshot.get('posts') ?? []);
+      existingPosts.add(postRef);
+      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({'posts': existingPosts});
       print('File info added to Firestore');
     } catch (e) {
       print('Error adding file info to Firestore: $e');
-      // Handle error
     }
   }
 

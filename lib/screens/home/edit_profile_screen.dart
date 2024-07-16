@@ -228,28 +228,57 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   setState(() {
                                     pickedFile = file;
                                   });
-                                }
-                                showDialog(
-                                              context: context, 
-                                              builder: (context) {
-                                                return const Center(child: CircularProgressIndicator());
-                                              }
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Confirm Upload'),
+                                      content: SizedBox(
+                                        width: 400,
+                                        height: 400,
+                                        child: Image.file(
+                                          File(pickedFile!.path!),
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); 
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text('Okay'),
+                                          onPressed: () async {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => Center(child: CircularProgressIndicator()),
                                             );
-                                final urlDownload = _filesServices.uploadFile(pickedFile!);
-                                String uid = FirebaseAuth.instance.currentUser!.uid;
-                                try {
-                                  await FirebaseFirestore.instance.collection('users').doc(uid).update({
-                                    'profileImageUrl': urlDownload,
-                                  });
-                                  print('Profile pic added successfully');
-                                  Navigator.pop(context);
-                                } catch (e) {
-                                  print('Error updating: $e');
-                                  Navigator.pop(context);
+                                            final urlDownload = await _filesServices.uploadProfilePhoto(pickedFile!);
+                                            String uid = FirebaseAuth.instance.currentUser!.uid;
+                                            
+                                              try{
+                                                await FirebaseFirestore.instance.collection('users').doc(uid).update(
+                                                  {
+                                                    'profileImageUrl': urlDownload
+                                                  }
+                                                );
+                                                print('Profile photo update');
+                                                Navigator.of(context).pop(); 
+                                              }catch (e){
+                                                print('Error: $e');
+                                                Navigator.of(context).pop(); 
+                                              }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 }
                               },
                               child: const Row(
-                                children: [ 
+                                children: [
                                   SizedBox(width: 20,),
                                   Icon(Icons.photo, size: 30,),
                                   SizedBox(width: 20,),
@@ -257,6 +286,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ],
                               ),
                             ),
+
                             const SizedBox(height: 20,),
                             const Row(
                               children: [ 

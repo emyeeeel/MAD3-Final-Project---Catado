@@ -19,7 +19,7 @@ class _ReelsItemState extends State<ReelsItem> {
 
   void getUserData() async {
     DocumentReference reelsDocRef =
-        FirebaseFirestore.instance.collection('reels').doc(widget.snapshot['reelsId']);
+    FirebaseFirestore.instance.collection('reels').doc(widget.snapshot['reelsId']);
     DocumentSnapshot reelsDoc = await reelsDocRef.get();
     DocumentReference userRef = reelsDoc.get('user');
     DocumentSnapshot userDoc = await userRef.get();

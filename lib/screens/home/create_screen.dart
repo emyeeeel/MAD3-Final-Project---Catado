@@ -72,7 +72,7 @@ class _CreateScreenState extends State<CreateScreen> {
                 color: Colors.blue,
                 onPressed: () async {
                   if (pickedFile != null) {
-                    await _filesServices.uploadFile(pickedFile!);
+                    await _filesServices.uploadFile(pickedFile!, 'Test caption');
                   }
                 },
                 child: Text("Upload File"),
