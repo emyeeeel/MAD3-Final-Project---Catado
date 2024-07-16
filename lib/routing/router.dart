@@ -14,6 +14,7 @@ import 'package:finals/screens/home/profile_screen.dart';
 import 'package:finals/screens/home/search_screen.dart';
 import 'package:finals/screens/home/settings_screen.dart';
 import 'package:finals/screens/home/showList_post.dart';
+import 'package:finals/screens/home/show_followers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/home/show_following.dart';
 
 class GlobalRouter{
   // Static method to initialize the singleton in GetIt
@@ -125,6 +127,20 @@ class GlobalRouter{
             name: ShowUserPostsScreen.name,
             builder: (context, _) {
               return const ShowUserPostsScreen();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: ShowFollowingScreen.route,
+            name: ShowFollowingScreen.name,
+            builder: (context, _) {
+              return const ShowFollowingScreen();
+          }),
+          GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
+            path: ShowFollowersScreen.route,
+            name: ShowFollowersScreen.name,
+            builder: (context, _) {
+              return const ShowFollowersScreen();
           }),
           ShellRoute(
               navigatorKey: _shellNavigatorKey,

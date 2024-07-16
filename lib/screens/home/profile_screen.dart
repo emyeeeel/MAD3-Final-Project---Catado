@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finals/screens/home/settings_screen.dart';
 import 'package:finals/screens/home/showList_post.dart';
+import 'package:finals/screens/home/show_followers.dart';
+import 'package:finals/screens/home/show_following.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controllers/data_controller.dart';
@@ -98,18 +100,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       const Spacer(),
-                      Column(
-                        children: [
-                          Text('${userDataController.userData!['followers']?.length ?? 0}'), 
-                          const Text("followers")
-                        ],
+                      GestureDetector(
+                        onTap: (){
+                          GlobalRouter.I.router.go(ShowFollowersScreen.route);
+                        },
+                        child: Column(
+                          children: [
+                            Text('${userDataController.userData!['followers']?.length ?? 0}'), 
+                            const Text("followers")
+                          ],
+                        ),
                       ),
                       const Spacer(),
-                      Column(
-                        children: [
-                          Text('${userDataController.userData!['following']?.length ?? 0}'), 
-                          const Text("following")
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          GlobalRouter.I.router.go(ShowFollowingScreen.route);
+                        },
+                        child: Column(
+                          children: [
+                            Text('${userDataController.userData!['following']?.length ?? 0}'), 
+                            const Text("following")
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -247,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
-                        return CircularProgressIndicator(); 
+                        return const CircularProgressIndicator(); 
                       }
                       List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
                       ..sort((a, b) => b.get('time').compareTo(a.get('time')));
