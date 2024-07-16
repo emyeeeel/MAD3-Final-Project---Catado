@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool isClicked = false;
   
   @override
   Widget build(BuildContext context) {
@@ -51,12 +52,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
-                obscureText: true,
+                obscureText: isClicked ? false : true,
                 controller: password,
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(10),
                   border: InputBorder.none,
                   hintText: 'Password',
+                  suffixIcon: GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        isClicked = !isClicked;
+                       });
+                      },
+                    child: Icon(isClicked ? Icons.visibility : Icons.visibility_off)),
                 ),
               ),
             ),

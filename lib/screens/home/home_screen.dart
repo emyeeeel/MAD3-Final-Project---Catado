@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finals/controllers/auth_controller.dart';
-import 'package:finals/routing/router.dart';
-import 'package:finals/screens/auth/login_screen.dart';
+import 'package:finals/widgets/post_item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -53,18 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
           }
           return Column(
             children: [
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: 110,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white)
-                ),
                 child: Row(
                   children: [
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     Column(
                           children: [
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             SizedBox(
                               child: Stack(
                                 children: [
@@ -106,74 +101,52 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const Center(child: Text('Home Page')),
-              MaterialButton(
-                color: Colors.blueGrey,
-                onPressed: (){
-                  AuthController.I.logout();
-                },
-                child: Text('Log out'),
-              ),
-              MaterialButton(
-                  color: Colors.blueAccent,
-                  onPressed: () async {
-                     if(FirebaseAuth.instance.currentUser != null){
-                      print("Current user: ${FirebaseAuth.instance.currentUser!.email}");
-                     }else{
-                      print("No user signed in");
-                     }
-                  },
-                  child: Text('Check current user'),
-              ),
-              Container(
-                  width: double.infinity,
-                  height: 500,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.white)
-                  ),
-                  child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection('posts').where('user', isEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(), //where user ref userId should be current authenticated user uid
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Something went wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
-                    }
-                    if (snapshot.data!.docs.isEmpty) {
-                      return Text('No posts found');
-                    }
-                    List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
-                    ..sort((a, b) => b.get('time').compareTo(a.get('time')));
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        final doc = sortedDocs[index];
-                        final String postId = doc.id;
-                        final Timestamp postTime = doc.get('time');
-                        final DocumentReference userRef = doc.get('user');
-                        // final DocumentSnapshot userData = userRef.
-                        final String url = doc.get('photoUrl');
-                        return SizedBox(
-                          child: Column(
-                            children: [
-                              Image.network(url, fit: BoxFit.cover,),
-                              Row(
-                                children: [
-                                  Icon(Icons.favorite),
-                                  Icon(Icons.comment),
-                                  Icon(Icons.send),
-                                ],
-                              ),
-                              Text('${userRef}')
-                            ],
+              Expanded(
+                child: SizedBox(
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid)).snapshots(), 
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Something went wrong');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Text("Loading");
+                      }
+                      if (snapshot.data!.docs.isEmpty) {
+                        return Text('No posts found');
+                      }
+                      List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
+                      ..sort((a, b) => b.get('time').compareTo(a.get('time')));
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final doc = sortedDocs[index];
+                          final DocumentReference userRef = doc.get('user');
+
+                          return SizedBox(
+                            child: FutureBuilder<DocumentSnapshot>(
+                            future: userRef.get(),
+                            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                              if (userSnapshot.hasError) {
+                                return Text('Error retrieving user');
+                              }
+                              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
+                              if (!userSnapshot.hasData) {
+                                return Text('User not found');
+                              }
+                              final userData = userSnapshot.data!;
+                              return PostItem(postSnapshot: doc, userSnapshot: userData);
+                            },
                           ),
-                        );
-                      }, 
-                    );
-                  },
+                          );
+                        }, 
+                      );
+                    },
+                    ),
                   ),
-                )
+              )
             ],
           );
         }
