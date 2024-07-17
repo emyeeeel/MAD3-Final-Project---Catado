@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../services/files_services.dart';
 
@@ -18,6 +19,37 @@ class _CreateScreenState extends State<CreateScreen> {
   final FilesServices _filesServices = FilesServices(); 
   PlatformFile? pickedFile;
   TextEditingController caption = TextEditingController();
+
+  late VideoPlayerController controller;
+  String filePath = '';
+  bool play = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (filePath.isNotEmpty) {
+      initializeController();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  void initializeController() {
+  controller = VideoPlayerController.file(File(filePath))
+    ..initialize().then((value) {
+      setState(() {
+        controller.setLooping(true);
+        controller.setVolume(1);
+        controller.play();
+      });
+    }).catchError((error) {
+      print("Failed to initialize video player: $error");
+    });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +69,25 @@ class _CreateScreenState extends State<CreateScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 400,
-                      height: 400,
-                      child: Image.file(
-                        File(pickedFile!.path!),
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          play = !play;
+                        });
+                        if (play) {
+                          controller.play();
+                        } else {
+                          controller.pause();
+                        }
+                      },
+                      child: SizedBox(
+                        width: 400,
+                        height: 400,
+                        child: _filesServices.getFileExtension(pickedFile!.name).toLowerCase() == 'mp4' ? VideoPlayer(controller) : Image.file(
+                          File(pickedFile!.path!),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -62,6 +106,10 @@ class _CreateScreenState extends State<CreateScreen> {
                   if (file != null) {
                     setState(() {
                       pickedFile = file;
+                      if (_filesServices.getFileExtension(file.name).toLowerCase() == 'mp4') {
+                        filePath = file.path!;
+                        initializeController();
+                      }
                     });
                   }
                 },
@@ -70,7 +118,7 @@ class _CreateScreenState extends State<CreateScreen> {
             ),
             TextField(
               controller: caption,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Caption here'
               ),
             ),
@@ -82,7 +130,18 @@ class _CreateScreenState extends State<CreateScreen> {
                     await _filesServices.uploadFile(pickedFile!, caption.text.trim());
                   }
                 },
-                child: const Text("Upload File"),
+                child: const Text("Upload Post"),
+              ),
+            ),
+            Center(
+              child: MaterialButton(
+                color: Colors.blue,
+                onPressed: () async {
+                  if (pickedFile != null) {
+                    await _filesServices.uploadReels(pickedFile!, caption.text.trim());
+                  }
+                },
+                child: const Text("Upload Reels"),
               ),
             ),
           ],

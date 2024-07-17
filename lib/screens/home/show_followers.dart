@@ -55,7 +55,7 @@ class _ShowFollowersScreenState extends State<ShowFollowersScreen> {
                   future: userDataController.userData!['followers'][index].get(),
                   builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return CircularProgressIndicator(); 
+                  return const CircularProgressIndicator(); 
                 }
                 Map<String, dynamic> documentData = snapshot.data!.data() as Map<String, dynamic>;
                     return SizedBox(

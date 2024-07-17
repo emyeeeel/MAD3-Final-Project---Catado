@@ -51,8 +51,8 @@ class _EditNameState extends State<EditName> {
                 showDialog(
                   context: context, 
                   builder: (context) => AlertDialog(
-                    title: const Text('AlertDialog Title'),
-                    content: const Text('AlertDialog description'),
+                    title: const Text('Are you sure you want to change your name?'),
+                    content: const Text('You cannot change your name for 14 days after this.'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () async {

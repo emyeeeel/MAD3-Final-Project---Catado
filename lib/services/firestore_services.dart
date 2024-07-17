@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreServices {
   static Future storeUser(String email, String uid) async {
@@ -10,6 +9,7 @@ class FirestoreServices {
       "followers": [],
       "following": [],
       "posts": [],
+      "reelse": [],
       "profileImageUrl": '',
       "bio": ''
     }, SetOptions(merge: true));

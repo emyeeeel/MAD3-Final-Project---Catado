@@ -27,6 +27,20 @@ class FilesServices {
     return urlDownload;
   }
 
+  Future<String> uploadReels(PlatformFile pickedFile, String caption) async {
+    final path = 'reels/${pickedFile.name}';
+    final file = File(pickedFile.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    UploadTask uploadTask = ref.putFile(file);
+
+    await uploadTask.whenComplete(() {});
+    final urlDownload = await ref.getDownloadURL();
+    print('Download URL: $urlDownload');
+    await storeReelsToFirestore(urlDownload, caption);
+    return urlDownload;
+  }
+
   Future<String> uploadProfilePhoto(PlatformFile pickedFile) async {
     final path = 'posts/${pickedFile.name}';
     final file = File(pickedFile.path!);
@@ -38,6 +52,30 @@ class FilesServices {
     final urlDownload = await ref.getDownloadURL();
     print('Download URL: $urlDownload');
     return urlDownload;
+  }
+
+  Future<void> storeReelsToFirestore(String url, String caption) async {
+    try {
+
+      DocumentReference reelsRef = await FirebaseFirestore.instance.collection('reels').add({
+        'reelsvideo': url,
+        'caption': caption,
+        'user': FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid),
+        'time': FieldValue.serverTimestamp(),
+        'comments': [],
+        'likes': 0
+      });
+
+      await reelsRef.update({'reelsId': reelsRef.id});
+
+      DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).get();
+      List<DocumentReference> existingReels = List.from(userDocSnapshot.get('reels') ?? []);
+      existingReels.add(reelsRef);
+      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update({'reels': existingReels});
+      print('File info added to Firestore');
+    } catch (e) {
+      print('Error adding file info to Firestore: $e');
+    }
   }
 
 

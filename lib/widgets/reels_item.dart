@@ -105,7 +105,7 @@ class _ReelsItemState extends State<ReelsItem> {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        widget.snapshot['comments'].length.toString(),
+                        widget.snapshot['comments']?.length == null ? '0' : '${widget.snapshot['comments']!.length}',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,

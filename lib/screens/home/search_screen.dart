@@ -75,7 +75,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 stream: FirebaseFirestore.instance.collection('posts').where('user', isNotEqualTo: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)).snapshots(),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData) {
-                            return CircularProgressIndicator(); 
+                            return const CircularProgressIndicator(); 
                           }
                           List<DocumentSnapshot> sortedDocs = snapshot.data!.docs.toList()
                           ..sort((a, b) => b.get('time').compareTo(a.get('time')));
