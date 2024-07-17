@@ -3,16 +3,16 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:finals/screens/home/edit_bio.dart';
-import 'package:finals/screens/home/edit_name.dart';
-import 'package:finals/screens/home/edit_username.dart';
+import 'package:finals/screens/home/profile/edit_bio.dart';
+import 'package:finals/screens/home/profile/edit_name.dart';
+import 'package:finals/screens/home/profile/edit_username.dart';
 import 'package:finals/screens/home/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../controllers/data_controller.dart';
-import '../../routing/router.dart';
-import '../../services/files_services.dart';
+import '../../../../controllers/data_controller.dart';
+import '../../../routing/router.dart';
+import '../../../services/files_services.dart';
 
 class EditProfileScreen extends StatefulWidget {
 

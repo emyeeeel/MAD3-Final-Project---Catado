@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finals/screens/home/edit_profile_screen.dart';
+import 'package:finals/screens/home/profile/edit_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../controllers/data_controller.dart';
-import '../../routing/router.dart';
+import '../../../controllers/data_controller.dart';
+import '../../../routing/router.dart';
 
 class EditName extends StatefulWidget {
   const EditName({super.key});
@@ -52,7 +52,7 @@ class _EditNameState extends State<EditName> {
                   context: context, 
                   builder: (context) => AlertDialog(
                     title: const Text('Are you sure you want to change your name?'),
-                    content: const Text('You cannot change your name for 14 days after this.'),
+                    content: const Text('You only change your name twice for 14 days after this.'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () async {

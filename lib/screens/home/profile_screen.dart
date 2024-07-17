@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controllers/data_controller.dart';
 import '../../routing/router.dart';
-import 'edit_profile_screen.dart';
+import 'profile/edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String route = '/profile';

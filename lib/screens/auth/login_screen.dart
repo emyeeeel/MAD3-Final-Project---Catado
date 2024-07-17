@@ -92,8 +92,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                 );
-                await AuthController.I.login(email.text.trim(), password.text.trim());
-                Navigator.pop(context);
+                try{
+                    await AuthController.I.login(email.text.trim(), password.text.trim());
+                    Navigator.pop(context);
+                  }catch(e){
+                    AlertDialog(
+                      title: const Text('Error occured!'),
+                      content: Text('$e'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Okay'),
+                          child: const Text('Okay'),
+                        ),
+                      ],
+                    );
+                  }
               },
               child: const Text("Log in", style: TextStyle(color: Colors.white),),
             ),

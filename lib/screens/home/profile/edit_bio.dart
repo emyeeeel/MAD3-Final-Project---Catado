@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finals/screens/home/edit_profile_screen.dart';
+import 'package:finals/screens/home/profile/edit_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../controllers/data_controller.dart';
-import '../../routing/router.dart';
+import '../../../controllers/data_controller.dart';
+import '../../../routing/router.dart';
 
 class EditBio extends StatefulWidget {
   const EditBio({super.key});

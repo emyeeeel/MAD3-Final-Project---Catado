@@ -19,7 +19,8 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
-  bool isClicked = false;
+  bool isPassClicked = false;
+  bool isConfirmClicked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
-                obscureText: isClicked ? false : true,
+                obscureText: isPassClicked ? false : true,
                 controller: password,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(10),
@@ -62,10 +63,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   suffixIcon: GestureDetector(
                     onTap: (){
                       setState(() {
-                        isClicked = !isClicked;
+                        isPassClicked = !isPassClicked;
                        });
                       },
-                    child: Icon(isClicked ? Icons.visibility : Icons.visibility_off)),
+                    child: Icon(isPassClicked ? Icons.visibility : Icons.visibility_off)),
                 ),
               ),
             ),
@@ -78,7 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius: BorderRadius.circular(8)
               ),
               child: TextField(
-                obscureText: isClicked ? false : true,
+                obscureText: isConfirmClicked ? false : true,
                 controller: confirmPassword,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(10),
@@ -87,10 +88,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   suffixIcon: GestureDetector(
                     onTap: (){
                       setState(() {
-                        isClicked = !isClicked;
+                        isConfirmClicked = !isConfirmClicked;
                        });
                       },
-                    child: Icon(isClicked ? Icons.visibility : Icons.visibility_off)),
+                    child: Icon(isConfirmClicked ? Icons.visibility : Icons.visibility_off)),
                 ),
               ),
             ),
@@ -109,8 +110,35 @@ class _SignupScreenState extends State<SignupScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
                 );
-                await AuthController.I.register(email.text.trim(), password.text.trim());
-                Navigator.pop(context);
+                if(password.text.trim() == confirmPassword.text.trim()){
+                  try{
+                    await AuthController.I.register(email.text.trim(), password.text.trim());
+                    Navigator.pop(context);
+                  }catch(e){
+                    AlertDialog(
+                      title: const Text('Error occured!'),
+                      content: Text('$e'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Okay'),
+                          child: const Text('Okay'),
+                        ),
+                      ],
+                    );
+                  }
+                }
+                else{
+                  AlertDialog(
+                      title: const Text('Sign up error'),
+                      content: const Text('Password do not match!'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Okay'),
+                          child: const Text('Okay'),
+                        ),
+                      ],
+                    );
+                }
               },
               child: const Text("Sign up", style: TextStyle(color: Colors.white),),
             ),
