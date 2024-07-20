@@ -190,28 +190,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-            // MaterialButton(
-            //   color: Colors.greenAccent,
-            //   onPressed: () async {
-            //      try{
-            //       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email.text.trim(), password: password.text.trim());
-            //      } catch (e) {
-            //       print(e.toString());
-            //     }
-            //   },
-            //   child: Text('Create'),
-            // ),
-            // MaterialButton(
-            //   color: Colors.yellowAccent,
-            //   onPressed: () async {
-            //     try{
-            //       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.text.trim(), password: password.text.trim());
-            //     } on FirebaseAuthException catch(e){
-            //       print("${e.code}: ${e.message}");
-            //     }
-            //   },
-            //   child: Text('Sign in'),
-            // ),
           ],
         ),
       );

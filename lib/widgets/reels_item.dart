@@ -19,19 +19,21 @@ class _ReelsItemState extends State<ReelsItem> {
   late VideoPlayerController controller;
   UserDataController userDataController = UserDataController();
   bool play = true;
+
   @override
   void initState() {
     super.initState();
-    controller = VideoPlayerController.network(widget.snapshot['reelsvideo'])
-      ..initialize().then((value) {
-        setState(() {
-          controller.setLooping(true);
-          controller.setVolume(1);
-          controller.play();
+    if (widget.snapshot['reelsvideo'] != null) {
+      controller = VideoPlayerController.network(widget.snapshot['reelsvideo'])
+        ..initialize().then((value) {
+          setState(() {
+            controller.setLooping(true);
+            controller.setVolume(1);
+            controller.play();
+          });
         });
-      });
-    userDataController
-        .listen(FirebaseAuth.instance.currentUser?.uid ?? 'unknown');
+    }
+    userDataController.listen(FirebaseAuth.instance.currentUser!.uid);
   }
 
   @override
@@ -48,6 +50,9 @@ class _ReelsItemState extends State<ReelsItem> {
         return FutureBuilder<DocumentSnapshot>(
           future: widget.snapshot['user'].get(),
           builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const CircularProgressIndicator(); 
+            }
             final userData = snapshot.data!;
             return Stack(
               children: [
@@ -80,39 +85,39 @@ class _ReelsItemState extends State<ReelsItem> {
                       ),
                     ),
                   ),
-                  Positioned(
+                const Positioned(
                   bottom: 100,
                   right: 15,
                   child: Column(
                     children: [
-                      const Icon(
-                            Icons.favorite,
-                            size: 24,
-                          ),
-                      const SizedBox(height: 3),
+                      Icon(
+                        Icons.favorite,
+                        size: 24,
+                      ),
+                      SizedBox(height: 3),
                       Text(
-                        widget.snapshot['likes'].toString(),
-                        style: const TextStyle(
+                        '0',
+                        style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 15),
-                      const Icon(
+                      SizedBox(height: 15),
+                      Icon(
                         Icons.comment,
                         color: Colors.white,
                         size: 28,
                       ),
-                      const SizedBox(height: 3),
+                      SizedBox(height: 3),
                       Text(
-                        widget.snapshot['comments']?.length == null ? '0' : '${widget.snapshot['comments']!.length}',
-                        style: const TextStyle(
+                        '0',
+                        style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 15),
-                      const Icon(
+                      SizedBox(height: 15),
+                      Icon(
                         Icons.send,
                         color: Colors.white,
                         size: 28,
@@ -131,7 +136,7 @@ class _ReelsItemState extends State<ReelsItem> {
                         children: [
                           CircleAvatar(
                             radius: 25,
-                            backgroundImage: NetworkImage(userData['profileImageUrl'] ?? 'https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain')
+                            backgroundImage: userData['profileImageUrl'] != null ? NetworkImage(userData['profileImageUrl']) : const NetworkImage('https://th.bing.com/th/id/OIP.0CZd1ESLnyWIHdO38nyJDAHaGF?rs=1&pid=ImgDetMain')
                           ),
                           const SizedBox(width: 10),
                           Text(
@@ -143,7 +148,7 @@ class _ReelsItemState extends State<ReelsItem> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          userDataController.userData!['following'].contains(widget.snapshot['user']) ? const Text('') :
+                          userData['following']?.contains(widget.snapshot['user']) ?? false ? const Text('') :
                           GestureDetector(
                             onTap: () async {
                               try{
@@ -189,7 +194,7 @@ class _ReelsItemState extends State<ReelsItem> {
                       const SizedBox(height: 8),
                       Text(
                         widget.snapshot['caption'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           color: Colors.white,
                         ),
